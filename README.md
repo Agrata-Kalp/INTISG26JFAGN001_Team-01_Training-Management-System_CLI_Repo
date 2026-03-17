@@ -1,2 +1,2 @@
-# INTISG26JFAGN001-Team-01-Project-v1.0-AgrataKalp
+# INTISG26JFAGN001_Team-01_Training_Management_System_CLI_Repo
 Internship Project- CLI Version 
