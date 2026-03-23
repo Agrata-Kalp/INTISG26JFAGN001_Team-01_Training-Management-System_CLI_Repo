@@ -48,163 +48,94 @@ com.cognizant
 └── ui           # MenuHandler and CLI logic
 ```
 
-## UML Diagram
+## Sequence Diagram
 
-classDiagram
+    actor User as User (CLI)
 
-%% =======================
-%% MODEL LAYER
-%% =======================
+    participant MenuHandler
 
-class Student {
-  -int id
-  -String username
-  -String email
-  +int getId()
-  +String getUsername()
-}
+    participant EnrollmentService
 
-class Trainer {
-  -int id
-  -String username
-  -String specialization
-}
+    participant EnrollmentDAO
 
-class Course {
-  -int id
-  -String courseName
-}
-
-class Enrollment {
-  -int id
-  -String status
-}
-
-class Certification {
-  -int id
-  -String certificateUrl
-}
-
-%% Relationships (Model)
-Student "1" --> "0..*" Enrollment
-Course "1" --> "0..*" Enrollment
-Trainer "1" --> "0..*" Course : teaches
-Student "1" --> "0..*" Certification
-Course "1" --> "0..*" Certification
+    participant DB as MySQL Database
 
 
-%% =======================
-%% DAO LAYER (Interfaces)
-%% =======================
 
-class StudentDAO {
-  <<interface>>
-  +boolean save(Student)
-  +Student findByUsername(String)
-}
+    User->>MenuHandler: Enter courseId
 
-class TrainerDAO {
-  <<interface>>
-  +boolean save(Trainer)
-}
-
-class CourseDAO {
-  <<interface>>
-  +boolean save(Course)
-  +List~Course~ getAllCourses()
-}
-
-class EnrollmentDAO {
-  <<interface>>
-  +boolean enroll(Student, Course)
-}
-
-class CertificationDAO {
-  <<interface>>
-  +boolean issueCertificate(Certification)
-}
+    MenuHandler->>EnrollmentService: enrollInCourse(studentId, courseId)
 
 
-%% =======================
-%% DAO IMPLEMENTATION
-%% =======================
 
-class StudentDAOImpl
-class TrainerDAOImpl
-class CourseDAOImpl
-class EnrollmentDAOImpl
-class CertificationDAOImpl
+    EnrollmentService->>EnrollmentDAO: checkEnrollment(studentId, courseId)
 
-StudentDAOImpl --|> StudentDAO
-TrainerDAOImpl --|> TrainerDAO
-CourseDAOImpl --|> CourseDAO
-EnrollmentDAOImpl --|> EnrollmentDAO
-CertificationDAOImpl --|> CertificationDAO
+    EnrollmentDAO->>DB: SELECT * FROM enrollment WHERE studentId, courseId
 
 
-%% =======================
-%% SERVICE LAYER
-%% =======================
 
-class StudentService {
-  +boolean register(Student)
-  +Student login(String, String)
-}
+    DB-->>EnrollmentDAO: Result (exists / not exists)
 
-class TrainerService {
-  +boolean register(Trainer)
-}
-
-class CourseService {
-  +boolean addCourse(Course)
-  +List~Course~ listCourses()
-}
-
-class EnrollmentService {
-  +String enroll(Student, Course)
-}
-
-class CertificationService {
-  +boolean generateCertificate(Student, Course)
-}
+    EnrollmentDAO-->>EnrollmentService: enrollment status
 
 
-%% =======================
-%% UI LAYER
-%% =======================
 
-class MenuHandler {
-  +void displayMenu()
-}
+    alt Already Enrolled
 
+        EnrollmentService-->>MenuHandler: "Already Enrolled"
 
-%% =======================
-%% CONFIG
-%% =======================
+        MenuHandler-->>User: Show message
 
-class DatabaseConfig {
-  +Connection getConnection()
-}
+    else Not Enrolled
+
+        EnrollmentService->>EnrollmentDAO: enroll(studentId, courseId)
+
+        EnrollmentDAO->>DB: INSERT INTO enrollment
 
 
-%% =======================
-%% DEPENDENCIES (LAYER FLOW)
-%% =======================
 
-MenuHandler --> StudentService
-MenuHandler --> TrainerService
-MenuHandler --> CourseService
-MenuHandler --> EnrollmentService
-MenuHandler --> CertificationService
+        DB-->>EnrollmentDAO: Success / Failure
 
-StudentService --> StudentDAO
-TrainerService --> TrainerDAO
-CourseService --> CourseDAO
-EnrollmentService --> EnrollmentDAO
-CertificationService --> CertificationDAO
+        EnrollmentDAO-->>EnrollmentService: status
 
-StudentDAOImpl --> DatabaseConfig
-TrainerDAOImpl --> DatabaseConfig
-CourseDAOImpl --> DatabaseConfig
-EnrollmentDAOImpl --> DatabaseConfig
-CertificationDAOImpl --> DatabaseConfig
+
+
+        EnrollmentService-->>MenuHandler: Enrollment result
+
+        MenuHandler-->>User: Display success/failure
+
+    end
+
+## Flowchart
+
+A[Start Application] --> B[Display Main Menu]
+
+    B --> C{Select Role}
+    C -->|Student| D[Student Login/Register]
+    C -->|Trainer| E[Trainer Login/Register]
+
+    D --> F[Validate Credentials]
+    E --> F
+
+    F -->|Success| G{Role Type}
+    F -->|Failure| B
+
+    G -->|Student| H[Student Dashboard]
+    G -->|Trainer| I[Trainer Dashboard]
+
+    H --> J{Choose Action}
+    I --> K{Choose Action}
+
+    J -->|Enroll Course| L[Enrollment Flow]
+    J -->|View Courses| M[List Courses]
+    J -->|Logout| N[Logout]
+
+    K -->|Add Course| O[Create Course]
+    K -->|View Courses| M
+    K -->|Logout| N
+
+    L --> H
+    M --> H
+    O --> I
+
+    N --> B
