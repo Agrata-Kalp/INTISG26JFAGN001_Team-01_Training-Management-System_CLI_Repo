@@ -49,93 +49,42 @@ com.cognizant
 ```
 
 ## Sequence Diagram
-
+```mermaid
+sequenceDiagram
     actor User as User (CLI)
-
     participant MenuHandler
-
     participant EnrollmentService
-
     participant EnrollmentDAO
-
     participant DB as MySQL Database
 
-
-
     User->>MenuHandler: Enter courseId
-
     MenuHandler->>EnrollmentService: enrollInCourse(studentId, courseId)
 
 
 
     EnrollmentService->>EnrollmentDAO: checkEnrollment(studentId, courseId)
-
     EnrollmentDAO->>DB: SELECT * FROM enrollment WHERE studentId, courseId
-
-
 
     DB-->>EnrollmentDAO: Result (exists / not exists)
 
     EnrollmentDAO-->>EnrollmentService: enrollment status
 
-
-
     alt Already Enrolled
 
         EnrollmentService-->>MenuHandler: "Already Enrolled"
-
         MenuHandler-->>User: Show message
 
     else Not Enrolled
 
         EnrollmentService->>EnrollmentDAO: enroll(studentId, courseId)
-
         EnrollmentDAO->>DB: INSERT INTO enrollment
-
-
 
         DB-->>EnrollmentDAO: Success / Failure
 
         EnrollmentDAO-->>EnrollmentService: status
 
-
-
-        EnrollmentService-->>MenuHandler: Enrollment result
-
-        MenuHandler-->>User: Display success/failure
+        EnrollmentService-->>MenuHandler: Result
+        MenuHandler-->>User: Display result
 
     end
-
-## Flowchart
-
-A[Start Application] --> B[Display Main Menu]
-
-    B --> C{Select Role}
-    C -->|Student| D[Student Login/Register]
-    C -->|Trainer| E[Trainer Login/Register]
-
-    D --> F[Validate Credentials]
-    E --> F
-
-    F -->|Success| G{Role Type}
-    F -->|Failure| B
-
-    G -->|Student| H[Student Dashboard]
-    G -->|Trainer| I[Trainer Dashboard]
-
-    H --> J{Choose Action}
-    I --> K{Choose Action}
-
-    J -->|Enroll Course| L[Enrollment Flow]
-    J -->|View Courses| M[List Courses]
-    J -->|Logout| N[Logout]
-
-    K -->|Add Course| O[Create Course]
-    K -->|View Courses| M
-    K -->|Logout| N
-
-    L --> H
-    M --> H
-    O --> I
-
-    N --> B
+```
