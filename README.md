@@ -49,45 +49,7 @@ com.cognizant
 ```
 
 ## Sequence Diagram
-```mermaid
-sequenceDiagram
-    actor User as User (CLI)
-    participant MenuHandler
-    participant EnrollmentService
-    participant EnrollmentDAO
-    participant DB as MySQL Database
 
-    User->>MenuHandler: Enter courseId
-    MenuHandler->>EnrollmentService: enrollInCourse(studentId, courseId)
-
-
-
-    EnrollmentService->>EnrollmentDAO: checkEnrollment(studentId, courseId)
-    EnrollmentDAO->>DB: SELECT * FROM enrollment WHERE studentId, courseId
-
-    DB-->>EnrollmentDAO: Result (exists / not exists)
-
-    EnrollmentDAO-->>EnrollmentService: enrollment status
-
-    alt Already Enrolled
-
-        EnrollmentService-->>MenuHandler: "Already Enrolled"
-        MenuHandler-->>User: Show message
-
-    else Not Enrolled
-
-        EnrollmentService->>EnrollmentDAO: enroll(studentId, courseId)
-        EnrollmentDAO->>DB: INSERT INTO enrollment
-
-        DB-->>EnrollmentDAO: Success / Failure
-
-        EnrollmentDAO-->>EnrollmentService: status
-
-        EnrollmentService-->>MenuHandler: Result
-        MenuHandler-->>User: Display result
-
-    end
-```
 ```mermaid
 flowchart TD
     A([Start]) --> B["--- Welcome to Training Management System !! ---<br/>Select your role:<br/>1. Student<br/>2. Trainer<br/>3. Exit"]
