@@ -88,3 +88,54 @@ sequenceDiagram
 
     end
 ```
+```mermaid
+flowchart TD
+    A([Start]) --> B["--- Welcome to Training Management System !! ---\nSelect your role:\n1. Student\n2. Trainer\n3. Exit"]
+
+    %% Role selection
+    B -->|1. Student| C["--- Student Portal ---\n1. Login Student\n2. Register Student\n3. Back to Main Menu"]
+    B -->|2. Trainer| D["--- Trainer Portal ---\n1. Login Trainer\n2. Register Trainer\n3. Back to Main Menu"]
+    B -->|3. Exit| Z([End])
+
+    %% Student portal branches
+    C -->|1. Login Student| E{Login successful?}
+    C -->|2. Register Student| F[Student Registration Flow]
+    C -->|3. Back| B
+
+    %% Student login decision
+    E -->|No| C
+    E -->|Yes| G["===== STUDENT DASHBOARD =====\nWelcome, <Student Name>!"]
+
+    %% Student dashboard options
+    G --> H[1. Browse Available Courses]
+    G --> I[2. Enroll in a Course]
+    G --> J[3. My Enrolled Courses]
+    G --> K[4. My Certifications]
+    G --> L[5. Log Out]
+
+    %% Student dashboard returns
+    H --> G
+    I --> G
+    J --> G
+    K --> G
+    L --> C
+
+    %% Trainer portal branches
+    D -->|1. Login Trainer| M{Login successful?}
+    D -->|2. Register Trainer| N[Trainer Registration Flow]
+    D -->|3. Back| B
+
+    %% Trainer login decision
+    M -->|No| D
+    M -->|Yes| O["===== TRAINER DASHBOARD =====\nWelcome, <Trainer Name>!"]
+
+    %% Trainer dashboard options
+    O --> P[1. View Student Details]
+    O --> Q[2. My Courses (Added by me)]
+    O --> R[3. Log Out]
+
+    %% Trainer dashboard returns
+    P --> O
+    Q --> O
+    R --> D
+```
