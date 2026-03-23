@@ -90,11 +90,11 @@ sequenceDiagram
 ```
 ```mermaid
 flowchart TD
-    A([Start]) --> B[--- Welcome to Training Management System !! ---<br/>Select your role:<br/>1. Student<br/>2. Trainer<br/>3. Exit]
+    A([Start]) --> B["--- Welcome to Training Management System !! ---<br/>Select your role:<br/>1. Student<br/>2. Trainer<br/>3. Exit"]
 
     %% Role selection
-    B -->|1. Student| C[--- Student Portal ---<br/>1. Login Student<br/>2. Register Student<br/>3. Back to Main Menu]
-    B -->|2. Trainer| D[--- Trainer Portal ---<br/>1. Login Trainer<br/>2. Register Trainer<br/>3. Back to Main Menu]
+    B -->|1. Student| C["--- Student Portal ---<br/>1. Login Student<br/>2. Register Student<br/>3. Back to Main Menu"]
+    B -->|2. Trainer| D["--- Trainer Portal ---<br/>1. Login Trainer<br/>2. Register Trainer<br/>3. Back to Main Menu"]
     B -->|3. Exit| Z([End])
 
     %% Student portal branches
@@ -104,7 +104,7 @@ flowchart TD
 
     %% Student login decision
     E -->|No| C
-    E -->|Yes| G[===== STUDENT DASHBOARD =====<br/>Welcome, &lt;Student Name&gt;!]
+    E -->|Yes| G["===== STUDENT DASHBOARD =====<br/>Welcome, Student!"]
 
     %% Student dashboard options
     G --> H[1. Browse Available Courses]
@@ -127,11 +127,11 @@ flowchart TD
 
     %% Trainer login decision
     M -->|No| D
-    M -->|Yes| O[===== TRAINER DASHBOARD =====<br/>Welcome, &lt;Trainer Name&gt;!]
+    M -->|Yes| O["===== TRAINER DASHBOARD =====<br/>Welcome, Trainer!"]
 
     %% Trainer dashboard options
     O --> P[1. View Student Details]
-    O --> Q[2. My Courses (Added by me)]
+    O --> Q["2. My Courses (Added by me)"]
     O --> R[3. Log Out]
 
     %% Trainer dashboard returns
